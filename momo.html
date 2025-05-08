@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTN Mobile Money (MoMo) Simulator: Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .momo-container {
+            background-color: #ffcc00;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #d70000;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #d70000;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #b50000;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="momo-container">
+        <h1>MTN Mobile Money</h1>
+        
+        <form id="momoForm">
+            <div class="form-group">
+                <label for="operation">Select Operation:</label>
+                <select id="operation" required>
+                    <option value="">-- Select an operation --</option>
+                    <option value="transfer">Transfer Money</option>
+                    <option value="withdraw">Withdraw Cash</option>
+                    <option value="deposit">Deposit Money</option>
+                    <option value="paybill">Pay Bill</option>
+                    <option value="airtime">Buy Airtime</option>
+                    <option value="balance">Check Balance</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="amountGroup">
+                <label for="amount">Amount (GHS):</label>
+                <input type="number" id="amount" min="1" step="0.01">
+            </div>
+            
+            <div class="form-group" id="recipientGroup">
+                <label for="recipient">Recipient Number:</label>
+                <input type="tel" id="recipient" placeholder="e.g., 0241234567">
+            </div>
+            
+            <div class="form-group" id="billGroup">
+                <label for="billType">Bill Type:</label>
+                <select id="billType">
+                    <option value="">-- Select bill type --</option>
+                    <option value="electricity">Electricity</option>
+                    <option value="water">Water</option>
+                    <option value="tv">TV License</option>
+                    <option value="school">School Fees</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="referenceGroup">
+                <label for="reference">Reference/Account Number:</label>
+                <input type="text" id="reference">
+            </div>
+            
+            <div class="form-group">
+                <label for="pin">MoMo PIN:</label>
+                <input type="password" id="pin" required minlength="4" maxlength="4" placeholder="4-digit PIN">
+            </div>
+            
+            <button type="button" onclick="processMomo()">Proceed</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Show/hide form fields based on selected operation
+        document.getElementById('operation').addEventListener('change', function() {
+            const operation = this.value;
+            const amountGroup = document.getElementById('amountGroup');
+            const recipientGroup = document.getElementById('recipientGroup');
+            const billGroup = document.getElementById('billGroup');
+            const referenceGroup = document.getElementById('referenceGroup');
+            
+            // Reset all groups
+            amountGroup.style.display = 'block';
+            recipientGroup.style.display = 'none';
+            billGroup.style.display = 'none';
+            referenceGroup.style.display = 'none';
+            
+            switch(operation) {
+                case 'transfer':
+                    recipientGroup.style.display = 'block';
+                    break;
+                case 'withdraw':
+                    // No additional fields needed
+                    break;
+                case 'deposit':
+                    // No additional fields needed
+                    break;
+                case 'paybill':
+                    billGroup.style.display = 'block';
+                    referenceGroup.style.display = 'block';
+                    break;
+                case 'airtime':
+                    recipientGroup.style.display = 'block';
+                    break;
+                case 'balance':
+                    amountGroup.style.display = 'none';
+                    break;
+            }
+        });
+
+        function processMomo() {
+            const operation = document.getElementById('operation').value;
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const recipient = document.getElementById('recipient').value;
+            const billType = document.getElementById('billType').value;
+            const reference = document.getElementById('reference').value;
+            const pin = document.getElementById('pin').value;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            if (!operation) {
+                resultDiv.innerHTML = '<p class="error">Please select an operation</p>';
+                return;
+            }
+            
+            if (pin.length !== 4 || !/^\d+$/.test(pin)) {
+                resultDiv.innerHTML = '<p class="error">Invalid PIN. Please enter a 4-digit number</p>';
+                return;
+            }
+            
+            let message = '';
+            
+            switch(operation) {
+                case 'transfer':
+                    if (!recipient || recipient.length !== 10) {
+                        message = '<p class="error">Please enter a valid 10-digit recipient number</p>';
+                    } else if (amount <= 0) {
+                        message = '<p class="error">Please enter a valid amount</p>';
+                    } else {
+                        message = `<p class="success">Success! You have transferred GHS ${amount.toFixed(2)} to ${recipient}. Transaction fee: GHS 0.50. New balance: GHS ${(1000 - amount - 0.5).toFixed(2)}</p>`;
+                    }
+                    break;
+                    
+                case 'withdraw':
+                    if (amount <= 0) {
+                        message = '<p class="error">Please enter a valid amount</p>';
+                    } else {
+                        message = `<p class="success">Withdrawal successful! GHS ${amount.toFixed(2)} will be disbursed by agent. Transaction fee: GHS 1.00. New balance: GHS ${(1000 - amount - 1).toFixed(2)}</p>`;
+                    }
+                    break;
+                    
+                case 'deposit':
+                    if (amount <= 0) {
+                        message = '<p class="error">Please enter a valid amount</p>';
+                    } else {
+                        message = `<p class="success">Deposit successful! GHS ${amount.toFixed(2)} has been added to your wallet. New balance: GHS ${(1000 + amount).toFixed(2)}</p>`;
+                    }
+                    break;
+                    
+                case 'paybill':
+                    if (!billType) {
+                        message = '<p class="error">Please select a bill type</p>';
+                    } else if (!reference) {
+                        message = '<p class="error">Please enter a reference/account number</p>';
+                    } else if (amount <= 0) {
+                        message = '<p class="error">Please enter a valid amount</p>';
+                    } else {
+                        message = `<p class="success">Bill payment successful! GHS ${amount.toFixed(2)} paid for ${billType} (Ref: ${reference}). New balance: GHS ${(1000 - amount).toFixed(2)}</p>`;
+                    }
+                    break;
+                    
+                case 'airtime':
+                    if (!recipient || recipient.length !== 10) {
+                        message = '<p class="error">Please enter a valid 10-digit recipient number</p>';
+                    } else if (amount <= 0) {
+                        message = '<p class="error">Please enter a valid amount</p>';
+                    } else {
+                        message = `<p class="success">Airtime purchase successful! GHS ${amount.toFixed(2)} airtime sent to ${recipient}. New balance: GHS ${(1000 - amount).toFixed(2)}</p>`;
+                    }
+                    break;
+                    
+                case 'balance':
+                    message = `<p class="success">Your current MoMo balance is GHS 1000.00</p>`;
+                    break;
+                    
+                default:
+                    message = '<p class="error">Please select a valid operation</p>';
+            }
+            
+            resultDiv.innerHTML = message;
+        }
+    </script>
+</body>
+</html>
