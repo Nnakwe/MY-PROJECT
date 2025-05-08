@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodExpress - Food Delivery App</title>
+  <link rel="stylesheet" href="pro.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Section -->
+    <header class="app-header">
+      <h1>FoodExpress</h1>
+      <div id="user-info"></div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- Auth Section (shown by default) -->
+      <section id="auth-section" class="active-section">
+        <div class="auth-form">
+          <h2>Welcome to FoodExpress</h2>
+          <div class="form-group">
+            <input type="email" id="email" placeholder="Email" required>
+          </div>
+          <div class="form-group">
+            <input type="password" id="password" placeholder="Password" required>
+          </div>
+          <div class="form-actions">
+            <button id="login-btn" class="btn btn-primary">Login</button>
+            <button id="register-btn" class="btn btn-secondary">Register</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Restaurants Section -->
+      <section id="restaurants-section">
+        <div class="section-header">
+          <h2>Restaurants Near You</h2>
+          <div class="search-filter">
+            <input type="text" id="search-input" placeholder="Search restaurants...">
+            <select id="cuisine-filter">
+              <option value="">All Cuisines</option>
+            </select>
+          </div>
+        </div>
+        <div id="restaurants-list" class="restaurants-grid"></div>
+      </section>
+
+      <!-- Menu Section -->
+      <section id="menu-section">
+        <div class="section-header">
+          <button id="back-to-restaurants" class="btn btn-back">← Back to Restaurants</button>
+          <h2 id="restaurant-name"></h2>
+        </div>
+        <div id="menu-items" class="menu-grid"></div>
+      </section>
+
+      <!-- Order Confirmation Section -->
+      <section id="order-confirmation-section">
+        <h2>Order Confirmation</h2>
+        <div id="order-details"></div>
+        <button id="back-to-menu" class="btn btn-primary">Back to Menu</button>
+      </section>
+    </main>
+
+    <!-- Shopping Cart -->
+    <aside id="shopping-cart">
+      <div class="cart-header">
+        <h3>Your Order</h3>
+        <button id="close-cart" class="btn btn-close">×</button>
+      </div>
+      <div id="cart-items" class="cart-items"></div>
+      <div class="cart-footer">
+        <div id="cart-total" class="cart-total">Total: $0.00</div>
+        <button id="checkout-btn" class="btn btn-primary" disabled>Checkout</button>
+      </div>
+    </aside>
+
+    <!-- Cart Toggle Button -->
+    <button id="cart-toggle" class="cart-toggle-btn">
+      <span id="cart-count">0</span> 
+    </button>
+  </div>
+
+ 
+
+</body>
+</html>
