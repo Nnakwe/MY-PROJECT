@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Ticket (MoMo) Simulator: Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .movie-container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #d70000;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #d70000;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #b50000;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="movie-container">
+        <h1>Movie Ticket</h1>
+        
+        <form id="movieForm">
+            <div class="form-group">
+                <label for="moviechoice">Movie Choice:</label>
+                <select id="choice" required>
+                    <option value="">-- Movie Selections --</option>
+                    <option value="Spider">Spider Movies (PG-13)</option>
+                    <option value="Frozen">Frozen Movies (G)</option>
+                    <option value="Conjuring">Conjuring Movies (R)</option>
+                    <option value="Muphasa">Muphasa Movies (PG-16)</option>
+                    <option value="Xmen">Xmen Movies (PG-16)</option>
+                    
+                </select>
+            </div>
+
+            <div class="form-group" id="TicketGroup">
+                <label for="ticket">Ticket(GHS):</label>
+                <input type="number" id="amount" fixed="15gh">
+            </div>
+            
+            <div class="form-group" id="SeatGroup">
+                <label for="seat">Number of Seat:</label>
+                <input type="numbers" id="seat" placeholder="e.g., 1,2,3,4,5 to 100">
+            </div>
+            
+            <div class="form-group" id="PaymentGroup">
+                <label for="paymentType">Payment Type:</label>
+                <select id="PaymentType">
+                    <option value="">-- Select bill type --</option>
+                    <option value="creditcard">Credit Card</option>
+                    <option value="mastercard">Master Card</option>
+                    <option value="visacard">Visa Card</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="referenceGroup">
+                <label for="reference">Reference/Account Number:</label>
+                <input type="text" id="reference">
+            </div>
+            
+            <div class="form-group">
+                <label for="pin">Card PIN:</label>
+                <input type="password" id="pin" required minlength="4" maxlength="4" placeholder="4-digit PIN">
+            </div>
+
+            <button type="button" onclick="processMomo()">Proceed</button>
+        </form>
+        
+        <div id="result"></div>
+    </div>
+
+     <script>
+        // Show/hide form fields based on selected movieselection
+        document.getElementById('movieselection').addEventListener('change', function() {
+            const movieselection = this.value;
+            const TicketGroup = document.getElementById('ticketGroup');
+            const SeatGroup = document.getElementById('seatGroup');
+            const PaymentGroup = document.getElementById('paymentGroup');
+            const referenceGroup = document.getElementById('referenceGroup');
+
+            // Reset all groups
+            amountGroup.style.display = 'block';
+            recipientGroup.style.display = 'none';
+            billGroup.style.display = 'none';
+            referenceGroup.style.display = 'none';
+
+            // Switch case for movie selection
+            let category;
+            switch (movieChoice) {
+                case "1":
+                    category = "Action";
+                    recipientGroup.style.display = 'block';
+                    break;
+                case "2":
+                    category = "Animation";
+                    // No additional fields needed
+                    break;
+                case "3":
+                    category = "Horror";
+                    billGroup.style.display = 'block';
+                    referenceGroup.style.display = 'block';
+                    break;
+                case "4":
+                    category = "Wild";
+                  recipientGroup.style.display = 'block';x
+                    break;
+                     category = "Romance";
+                  amountGroup.style.display = 'none';
+                    break;
+                default:
+                    category = "Unknown";
+            }
+            
+
+            function processMovie() {
+            const choice = document.getElementById('choice').value;
+            const ticket = parseFloat(document.getElementById('ticket').value) || 0;
+            const seat = document.getElementById('seat').value;
+            const paymentType = document.getElementById('paymentType').value;
+            const reference = document.getElementById('reference').value;
+            const pin = document.getElementById('pin').value;
+            
+            const resultDiv = document.getElementById('result');
+
+            if (!choice) {
+                resultDiv.innerHTML = '<p class="error">Please select an operation</p>';
+                return;
+            }
+            
+            if (pin.length !== 4 || !/^\d+$/.test(pin)) {
+                resultDiv.innerHTML = '<p class="error">Invalid PIN. Please enter a 4-digit number</p>';
+                return;
+            }
+            //  let message = '';
+            
+            // switch(choice) {
+            //     case 'creditcard':
+            //         |
+            //         } else if (amount <= 0) {
+            //             message = '<p class="error">Please enter a valid amount</p>';
+            //         } else {
+            //             message = `<p class="success">Success! You have transferred GHS ${amount.toFixed(2)} to ${recipient}. Transaction fee: GHS 0.50. New balance: GHS ${(1000 - amount - 0.5).toFixed(2)}</p>`;
+            //         }
+            //         break;
+                    
+            //     case 'mastercard':
+            //         if (amount <= 0) {
+            //             message = '<p class="error">Please enter a valid amount</p>';
+            //         } else {
+            //             message = `<p class="success">Withdrawal successful! GHS ${amount.toFixed(2)} will be disbursed by agent. Transaction fee: GHS 1.00. New balance: GHS ${(1000 - amount - 1).toFixed(2)}</p>`;
+            //         }
+            //         break;
+                    
+            //     case 'visacard':
+            //         if (amount <= 0) {
+            //             message = '<p class="error">Please enter a valid amount</p>';
+            //         } else {
+            //             message = `<p class="success">Deposit successful! GHS ${amount.toFixed(2)} has been added to your wallet. New balance: GHS ${(1000 + amount).toFixed(2)}</p>`;
+            //         }
+            //         break;
+            //  let message = '';
+            
+            // switch(choice) {
+            //     case 'spider':
+            //         if (!seat || seat.length !== 100) {
+            //             message = '<p class="error">Please enter a valid 1 to 100-digit seat number</p>';
+                    
+            //         default:
+            //         message = '<p class="error">Please select a valid operation</p>';
+            // }
+            
+              <p><strong>Ticket Price:</strong> $${selectedticket.price.toFixed(2)}</p>
+                <p><strong>Payment Method:</strong> ${paymentMethods[paymentMethod]}</p>
+                <p><strong>Total Cost:</strong> $${totalCost.toFixed(2)}</p>
+                <p>Thank you for your purchase! Your order will be shipped within 2 business days.</p>
+        }
+
+
+
+
+
+
+
+
+  </script>
+</body>
+</html>
